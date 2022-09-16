@@ -1,0 +1,18 @@
+name: Environment Sink Actions
+on:
+  workflow_call:
+    inputs:
+      var-file:
+        required: true
+        type: string
+
+jobs:
+  environment-sink:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out code
+        uses: actions/checkout@v3
+      - name: Dump Environment Variables
+        run: |
+          echo "Dumping environment variables"
+          env
