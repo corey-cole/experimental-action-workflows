@@ -20,10 +20,8 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ${{ inputs.var-file }}
-      - name: Source .env file
-        run: |
-          source <(grep -v '^#' sink.env | sed -E 's|^(.+)=(.*)$|: ${\1=\2}; export \1|g')
       - name: Dump Environment Variables
         run: |
+          source <(grep -v '^#' sink.env | sed -E 's|^(.+)=(.*)$|: ${\1=\2}; export \1|g')
           echo "Dumping environment variables"
           env
