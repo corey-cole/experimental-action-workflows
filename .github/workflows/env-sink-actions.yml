@@ -6,12 +6,23 @@ on:
         required: true
         type: string
 
+# This assumes that we know the name of the .env file
+# If we also need to pass the name where it's downloaded, that will be a separate input var
+# .env file parsing comes from this gist:
+# https://gist.github.com/judy2k/7656bfe3b322d669ef75364a46327836
 jobs:
   environment-sink:
     runs-on: ubuntu-latest
     steps:
       - name: Check out code
         uses: actions/checkout@v3
+      - name: Download artifact
+        uses: actions/download-artifact@v3
+        with:
+          name: ${{ inputs.var-file }}
+      - name: Source .env file
+        run: |
+          source <(grep -v '^#' sink.env | sed -E 's|^(.+)=(.*)$|: ${\1=\2}; export \1|g')
       - name: Dump Environment Variables
         run: |
           echo "Dumping environment variables"
