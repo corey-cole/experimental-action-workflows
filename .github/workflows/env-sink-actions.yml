@@ -2,12 +2,16 @@ name: Environment Sink Actions
 on:
   workflow_call:
     inputs:
+      env-file-artifact:
+        required: false
+        type: string
+      env-file-name:
+        required: false
+        type: string
       var-file:
         required: false
         type: string
 
-# .env file parsing comes from this gist:
-# https://gist.github.com/judy2k/7656bfe3b322d669ef75364a46327836
 jobs:
   environment-sink:
     runs-on: ubuntu-latest
@@ -16,23 +20,15 @@ jobs:
         uses: actions/checkout@v3
         # Only run this step if an artifact name was given
       - name: Download env file
-        if: inputs.var-file != ''
+        if: inputs.env-file-artifact != '' && inputs.env-file-name != ''
         uses: actions/download-artifact@v3
         with:
-          name: ${{ inputs.var-file }}
+          name: ${{ inputs.env-file-artifact }}
       - name: Append env file to GITHUB_ENV
+        if: inputs.env-file-artifact != '' && inputs.env-file-name != ''
         run: |
-          touch sink.env
-          cat sink.env >> $GITHUB_ENV
+          cat ${{ inputs.env-file-name }} >> $GITHUB_ENV
       - name: Dump Environment Variables
         run: |
           echo "Dumping environment variables"
           env
-
-
-
-        # run: |
-        #   touch sink.env
-        #   source <(grep -v '^#' sink.env | sed -E 's|^(.+)=(.*)$|: ${\1=\2}; export \1|g')
-        #   echo "Dumping environment variables"
-        #   env
