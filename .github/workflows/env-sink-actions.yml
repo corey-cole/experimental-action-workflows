@@ -21,9 +21,19 @@ jobs:
         with:
           name: ${{ inputs.var-file }}
           path: sink.env
-      - name: Dump Environment Variables
+      - name: Append env file to GITHUB_ENV
         run: |
           touch sink.env
-          source <(grep -v '^#' sink.env | sed -E 's|^(.+)=(.*)$|: ${\1=\2}; export \1|g')
+          cat sink.env >> $GITHUB_ENV
+      - name: Dump Environment Variables
+        run: |
           echo "Dumping environment variables"
           env
+
+
+
+        # run: |
+        #   touch sink.env
+        #   source <(grep -v '^#' sink.env | sed -E 's|^(.+)=(.*)$|: ${\1=\2}; export \1|g')
+        #   echo "Dumping environment variables"
+        #   env
