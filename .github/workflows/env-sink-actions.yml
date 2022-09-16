@@ -20,7 +20,6 @@ jobs:
         uses: actions/download-artifact@v3
         with:
           name: ${{ inputs.var-file }}
-          path: sink.env
       - name: Append env file to GITHUB_ENV
         run: |
           touch sink.env
